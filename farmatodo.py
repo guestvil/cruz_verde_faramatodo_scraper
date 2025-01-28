@@ -14,9 +14,10 @@ farmatodo_categorias = ['https://www.farmatodo.com.co/categorias/salud-y-medicam
                         'https://www.farmatodo.com.co/categorias/cuidado-personal',
                         'https://www.farmatodo.com.co/categorias/dermocosmetica']
 
-farmadoto_productos = {}
 
 def get_x_alone(product_name):
+    '''Takes a name such as drug X 30 and returns only X30
+    This is to tell apart two products with the same INVIMA code but differente quantity.'''
     new_name = 'X'
     some_text = product_name.split()
     for word in range(len(some_text)):
@@ -51,6 +52,9 @@ def load_page_with_retry(page, url, retries=3):
 
 
 def get_products_from_page(grid_html, python_dictionary, base_link, playwright_browser):
+    '''grid_html = an html of the grid in which all products are displayed in the site
+    base_link: farmatodo url
+    It itirates over all the product links in the grid and stores their information.'''
     counter = 0
     counter_products = 0
     farmadoto_products_links = []
@@ -72,14 +76,6 @@ def get_products_from_page(grid_html, python_dictionary, base_link, playwright_b
         except Error as e:
             print(e)
             print('Error con el producto: ', product_link)
-        #if product_page.locator('a.box__see', has_text="Ver más").is_visible():
-         #   try: 
-           #     product_page.locator('a.box__see', has_text="Ver más").click()
-          #  except TimeoutError as e: 
-            #    print(e)
-             #   print('El botón ver más no está funcionando en: ', product_link)
-            #except Error as e:
-             #   print('Algo pasó con el botón de Ver más en: ', product_link)
         try:
             product_html = product_page.locator('div.col-12.col-lg-4.px-0.py-2.py-lg-5').inner_html()
         except TimeoutError as e:
@@ -118,22 +114,19 @@ def get_products_from_page(grid_html, python_dictionary, base_link, playwright_b
             old_name = get_x_alone(python_dictionary[product_invima][0])
             # The X30 is added to the INVIMA code, and this is the new key for that product
             python_dictionary[product_invima + old_name] = python_dictionary.pop(product_invima)
-            #print(product_link)
-            #print(product_invima + old_name)
             # The INVIMA code in the current product is changed so that in includes the name, INVIMAX10
             product_invima = product_invima + get_x_alone(product_name=product_name)
-            #print(product_invima)
         if product_invima != 'None' and product_price != 'None':
             python_dictionary[product_invima]= [product_name, product_price, product_link]
             counter_products += 1
-            #print(f'Añadidos {counter_products} productos')
             print('Invima: ', product_invima, '\n', 'Nombre: ', product_name, '\n', 'Precio: ', product_price, '\n')
         product_page.close()
     return python_dictionary
 
 
 def get_html_from_locator_retry(locator_string, playwright_page, current_url):
-    '''locator_string: string with a locator in playwright
+    ''' Sometimes the page layout changes, this functions makes sure that those cases are handled.
+    locator_string: string with a locator in playwright
     playwright_page: a playwright page'''
     counter = 0
     while counter < 5:
@@ -146,7 +139,6 @@ def get_html_from_locator_retry(locator_string, playwright_page, current_url):
             html = 'None'
             playwright_page.goto(current_url, wait_until='load')
     return html
-
 
 
 def get_products_farmatodo(url, products_dicionary):
@@ -221,14 +213,14 @@ def get_products_farmatodo(url, products_dicionary):
     return products_dicionary
 
 
-inicio = datetime.now()
-print(inicio)
-for link in farmatodo_categorias:
-    get_products_farmatodo(link, farmadoto_productos)
-final = datetime.now()
+def main():
+    farmadoto_productos = {}
+    for link in farmatodo_categorias:
+        get_products_farmatodo(link, farmadoto_productos)
+    with open('farmatodo_completo.json', 'w') as file:
+        json.dump(farmadoto_productos, file)
+    print('PROGRAMA EXITOSO, archivo guardado en farmatodo_completo.json')
 
-with open('farmatodo_completo.json', 'w') as file:
-    json.dump(farmadoto_productos, file)
 
-print('PROGRAMA EXITOSO, archivo guardado en farmatodo_completo.json')
-print(f'Hora de inicio: {inicio}, hora de finalización: {final}')
+if __name__ == "__main__":
+    main()
