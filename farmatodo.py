@@ -143,7 +143,7 @@ def get_html_from_locator_retry(locator_string, playwright_page, current_url):
 
 def get_products_farmatodo(url, products_dicionary):
     with sync_playwright() as p:
-        browswer = p.chromium.launch(headless=False)
+        browswer = p.chromium.launch(headless=True)
         page = browswer.new_page()
         load_page_with_retry(page=page, url=url)
         list_html = get_html_from_locator_retry(locator_string='div.container-fluid.cont-filtres-categories', playwright_page=page, current_url=url)
