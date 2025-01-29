@@ -205,7 +205,7 @@ def get_products_farmatodo(url, products_dicionary):
                 page_grid_html=None
                 print('Error encontrando el locator del grid en la categoría', button.get_text())
             if page_grid_html is not None:
-                get_products_from_page(page_grid_html, farmadoto_productos, farmatodo_link, browswer)
+                get_products_from_page(page_grid_html, products_dicionary, farmatodo_link, browswer)
         dict_size = len(products_dicionary.keys())
         print(f'Se almacenaron {dict_size} productos de Farmatodo')
         # let's extract all product information from a subcategory in the site
