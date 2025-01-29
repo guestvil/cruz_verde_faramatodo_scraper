@@ -1,9 +1,8 @@
 # What does this code do?
 
-Gets all available products' information from Cruz Verde and Farmatodo. From each product the following information is stored: 
+This code retrieves all available product information from Cruz Verde and Farmatodo. For each product, the following information is stored:
+	1.	INVIMA code: This code is universal for all products in Colombia, allowing for comparisons between products from different companies, even if their names vary slightly.
+	2.	Price.
+	3.	HTML: Stored in case there are inconsistencies in the information that require direct verification.
 
-1. INVIMA code: this code is universal for all products in Colombia, so this will allow to compare products from differente companies in which the name can be slightly different. 
-2. Price. 
-3. html: in case there are inconsistencies in the information that require direct verification. 
-
-**Once I finish uploading the repo this code WILL NOT BE MANTAINED**. 
+**Once I finish uploading the repository, this code WILL NOT BE MAINTAINED.**
